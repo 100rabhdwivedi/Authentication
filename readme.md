@@ -28,8 +28,8 @@ A modern authentication system demonstrating **production-level security practic
 ## ⚙️ Setup
 
 ```bash
-git clone https://github.com/yourusername/repo-name.git
-cd repo-name
+git clone https://github.com/100rabhdwivedi/Authentication
+cd Authentication
 npm install
 npm run dev
 ```
