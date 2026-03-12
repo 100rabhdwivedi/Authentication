@@ -151,7 +151,7 @@ Use the verification code below to complete your sign-in to Authentication App.
 <!-- Footer -->
 <tr>
 <td class="footer">
- 2025 Authentication App. All rights reserved.
+ ${new Date().getFullYear()} Authentication App. All rights reserved.
 </td>
 </tr>
 <tr>
