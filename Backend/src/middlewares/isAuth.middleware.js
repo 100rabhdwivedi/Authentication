@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
-import TryCatch from './TryCatch.middleware'
-import redisClient from '../config/redis';
-import { User } from '../models/user.model';
+import TryCatch from './TryCatch.middleware.js'
+import redisClient from '../config/redis.js';
+import { User } from '../models/user.model.js';
 
 export const isAuth = TryCatch(async(req,res,next)=>{
     const token = req.cookies.accessToken;
@@ -12,7 +12,7 @@ export const isAuth = TryCatch(async(req,res,next)=>{
         })
     }
 
-    const decoded = jwt.verify(token.proccess.env.JWT_SECRET)
+    const decoded = jwt.verify(token,process.env.JWT_SECRET)
     if(!decoded){
         return res.status(400).json({
             message:"Token expired"

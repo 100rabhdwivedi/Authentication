@@ -7,7 +7,7 @@ import crypto from "crypto"
 import sendMail from '../services/send.mail.js'
 import bcrypt from 'bcrypt'
 import { getOtpHtml, getVerifyEmailHtml } from '../config/html.js'
-import { generateToken } from '../config/generateToken.js'
+import {  generateToken, verifyRefreshToken } from '../config/generateToken.js'
 
 export const  registerUser =  TryCatch(async (req,res)=>{
     const senitizedBody = senitize(req.body)
@@ -208,12 +208,43 @@ export const verifyOtp = TryCatch(async(req,res)=>{
     }
     await redisClient.del(otpKey)
 
-    let user = await User.findOne({email})
+    let user = await User.findOne({email}).select("-password")
 
     let tokenData = await generateToken(user._id,res)
 
     res.status(200).json({
         message:`Welcome ${user.name}`,
         user
+    })
+})
+
+export const myProfile = TryCatch(async(req,res)=>{
+    const user = req.user 
+    res.status(200).json(user)
+})
+
+export const refreshToken = TryCatch(async(req,res)=>{
+
+    const refreshToken = req.cookies.refreshToken
+
+    if(!refreshToken){
+        return res.status(401).json({
+            message:"Invalid refresh token"
+        })
+    }
+
+    const decode = await verifyRefreshToken(refreshToken)
+
+    if(!decode){
+        return res.status(401).json({
+            message:"Invalid refresh token"
+        })
+    }
+
+    // generate new access + refresh token
+    await generateToken(decode.id,res)
+
+    res.status(200).json({
+        message:"Session refreshed"
     })
 })
