@@ -1,19 +1,28 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { server } from '../main.jsx'
+import { toast } from "react-toastify";
+import axios from 'axios'
 const Login = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm();
 
-    const submitHandler = (data) => {
-        console.log(data);
+    const submitHandler = async (data) => {
+        try {
+            const res = await axios.post(`${server}/api/v1/login`, data);
+            toast.success(res.data.message);
+            localStorage.setItem("email",data.email)
+            navigate('/verifyotp')
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Login failed");
+        }
     };
 
     return (
@@ -94,6 +103,7 @@ const Login = () => {
                             className="absolute right-0 top-2 text-zinc-400 hover:text-white"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+
                         </button>
                     </div>
 
@@ -107,9 +117,10 @@ const Login = () => {
                 {/* Submit */}
                 <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-zinc-200 transition"
                 >
-                    Submit
+                    {isSubmitting ? "Logging in..." : "Login"}
                 </button>
 
                 {/* Signup */}
