@@ -40,12 +40,12 @@ const VerifyOtp = () => {
             const res = await axios.post(`${server}/api/v1/verify`, {
                 email,
                 otp: code,
+            },{
+                withCredentials:true
             });
 
             toast.success(res.data.message);
-
             localStorage.removeItem("email");
-
             navigate("/dashboard");
         } catch (error) {
             toast.error(error.response?.data?.message || "OTP verification failed");
