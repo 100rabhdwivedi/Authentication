@@ -3,11 +3,13 @@ import axios from "axios";
 import { server } from "../main.jsx";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
+import { AppData } from "../context/AppContex.jsx";
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const inputs = useRef([]);
     const navigate = useNavigate();
+    const {setIsAuth,setUser} = AppData()
 
     const email = localStorage.getItem("email");
 
@@ -45,8 +47,10 @@ const VerifyOtp = () => {
             });
 
             toast.success(res.data.message);
+            setIsAuth(true)
+            setUser(res.user)
             localStorage.removeItem("email");
-            navigate("/dashboard");
+            navigate("/");
         } catch (error) {
             toast.error(error.response?.data?.message || "OTP verification failed");
         }
