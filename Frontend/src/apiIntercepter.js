@@ -62,7 +62,7 @@ api.interceptors.response.use(
         if(error.response?.status === 403 && !originalRequest._retry){
             const errorCode = error.response.data?.code || ""
 
-            if(errorCode.startWith("CSRF_")){
+            if(errorCode.startsWith("CSRF_")){
                 if(isRefreshingCSRFToken){
                     return new Promise((resolve,reject)=>{
                         csrfFailedQueue.push({resolve,reject})
