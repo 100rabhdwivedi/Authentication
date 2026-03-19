@@ -13,6 +13,7 @@ const Register = () => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm();
 
@@ -21,7 +22,7 @@ const Register = () => {
             const res = await axios.post(`${server}/api/v1/register`, data);
 
             toast.success(res.data.message);
-
+            reset()
         } catch (error) {
             toast.error(error.response?.data?.message || "Registration failed");
         }

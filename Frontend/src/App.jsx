@@ -15,9 +15,9 @@ const App = () => {
     {loading?<Loading/> :
     <>
       <Routes>
-      <Route path='/' element={isAuth? <Home /> :<Login/>} />
-      <Route path='/login' element={isAuth? <Home /> :<Login/>} />
-      <Route path='/register' element={<Register/>} />
+      <Route path='/' element={!isAuth? <Login /> :<Home/>} />
+      <Route path='/login' element={!isAuth? <Login /> :<Home/>} />
+      <Route path='/register' element={!isAuth ? <Register/> : <Home/>} />
       <Route path='/verifyotp' element={!isAuth ? <VerifyOtp/> : <Home />} />
       <Route path='/token/:token' element={!isAuth ? <Verify/> : <Home />} />
       <Route path='/dashboard' element={isAuth ? <Dashboard/> : <Login />} />
