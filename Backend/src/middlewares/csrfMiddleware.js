@@ -49,7 +49,7 @@ export const verifyCSRFToken = async (req, res, next) => {
             })
         }
 
-        if (storedToken != csrfToken) {
+        if (storedToken != clientToken) {
             return res.status(403).json({
                 message: "Invalid CSRF Token. Please refresh the page.",
                 code: "CSRF_TOKEN_INVALID"

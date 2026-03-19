@@ -1,8 +1,10 @@
 import React from "react";
 import { AppData } from "../context/AppContex";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
     const {logoutUser} = AppData()
+    const navigate = useNavigate()
     return (
         <div className="min-h-screen bg-black text-white flex flex-col">
 
@@ -12,7 +14,7 @@ const Home = () => {
                 <h1 className="font-semibold text-lg">AuthVault</h1>
 
                 <div className="flex gap-3">
-                    <button onClick={logoutUser} className="px-4 py-2 bg-white text-black rounded-lg text-sm hover:bg-zinc-200 transition">
+                    <button onClick={()=>logoutUser(navigate)} className="px-4 py-2 bg-white text-black rounded-lg text-sm hover:bg-zinc-200 transition">
                         Logout
                     </button>
                 </div>

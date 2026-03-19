@@ -58,5 +58,5 @@ export const verifyRefreshToken = async (refreshToken) => {
 
 export const revokeRefreshToken = async (userId) =>{
     await redisClient.del(`refresh_token:${userId}`)
-    await revokeCSRFTOKEN()
+    await revokeCSRFTOKEN(userId)
 }
