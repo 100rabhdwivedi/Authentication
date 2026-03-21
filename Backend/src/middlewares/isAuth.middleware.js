@@ -37,3 +37,14 @@ export const isAuth = TryCatch(async(req,res,next)=>{
     req.user = user
     next()
 })
+
+export const authorizedAdmin = async (req,res) =>{
+    const user = req.user
+
+    if(user.role !== "admin"){
+        return res.status(401).json({
+            message:"You are not allowed for this activity"
+        })
+    }
+    next()
+}
