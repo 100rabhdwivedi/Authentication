@@ -282,3 +282,14 @@ export const adminController = TryCatch(async(req,res)=>{
         message:"Hello admin"
     })
 })
+
+export const authorizedAdmin = async (req,res) =>{
+    const user = req.user
+
+    if(user.role !== "admin"){
+        return res.status(401).json({
+            message:"You are not allowed for this activity"
+        })
+    }
+    next()
+}
