@@ -283,7 +283,7 @@ export const adminController = TryCatch(async(req,res)=>{
     })
 })
 
-export const authorizedAdmin = async (req,res) =>{
+export const authorizedAdmin = async (req,res,next) =>{
     const user = req.user
 
     if(user.role !== "admin"){
@@ -293,3 +293,20 @@ export const authorizedAdmin = async (req,res) =>{
     }
     next()
 }
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-password");
+
+        res.status(200).json({
+            success: true,
+            users
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching users",
+            error: error.message
+        });
+    }
+};

@@ -48,7 +48,7 @@ const VerifyOtp = () => {
 
             toast.success(res.data.message);
             setIsAuth(true)
-            setUser(res.user)
+            setUser(res.data.user)
             localStorage.removeItem("email");
             navigate("/");
         } catch (error) {

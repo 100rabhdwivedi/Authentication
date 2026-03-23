@@ -38,7 +38,7 @@ export const isAuth = TryCatch(async(req,res,next)=>{
     next()
 })
 
-export const authorizedAdmin = async (req,res) =>{
+export const authorizedAdmin = async (req,res,next) =>{
     const user = req.user
 
     if(user.role !== "admin"){

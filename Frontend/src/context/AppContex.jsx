@@ -14,11 +14,15 @@ export const AppProvider = ({ children }) => {
     async function fetchUser() {
         setLoading(true)
         try {
-            const { data } = await api.get(`/api/v1/me`)
-            setUser(data.user)
+            const response = await api.get(`/api/v1/me`)
+            if(response.status == 200){
+            setUser(response.data)
             setIsAuth(true)
+            }
         } catch (error) {
+            setUser(null)
             console.log(error)
+            setIsAuth(false)
         } finally {
             setLoading(false)
         }
@@ -38,6 +42,9 @@ export const AppProvider = ({ children }) => {
 
     }
 
+
+    console.log(user);
+    
     useEffect(() => {
         fetchUser()
     }, [])

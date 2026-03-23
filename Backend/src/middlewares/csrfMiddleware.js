@@ -19,51 +19,45 @@ export const generateCSRFToken = async (userId, res) => {
 
 export const verifyCSRFToken = async (req, res, next) => {
     try {
-        if (req.method === "GET") {
-            return next()
+        // ✅ skip safe routes
+        if (req.method === "GET" || req.path === "/logout") {
+            return next();
         }
 
-        const userId = req.user ?.id
+        const userId = req.user?._id;
 
         if (!userId) {
             return res.status(401).json({
                 message: "User is not authenticated"
-            })
+            });
         }
 
-        const clientToken = req.headers["x-csrf-token"]
+        const clientToken = req.headers["x-csrf-token"];
+
         if (!clientToken) {
             return res.status(403).json({
-                message: "CSRF Token missing. Please refresh the page.",
+                message: "CSRF Token missing",
                 code: "CSRF_TOKEN_MISSING"
-            })
+            });
         }
 
-        const csrfKey = `csrf:${userId}`;
-        const storedToken = await redisClient.get(csrfKey)
+        const storedToken = await redisClient.get(`csrf:${userId}`);
 
-        if (!storedToken) {
+        if (!storedToken || storedToken !== clientToken) {
             return res.status(403).json({
-                message: "CSRF Token Expired. Please try again.",
-                code: "CSRF_TOKEN_EXPIRED"
-            })
-        }
-
-        if (storedToken != clientToken) {
-            return res.status(403).json({
-                message: "Invalid CSRF Token. Please refresh the page.",
+                message: "Invalid CSRF Token",
                 code: "CSRF_TOKEN_INVALID"
-            })
+            });
         }
-        next()
+
+        next();
     } catch (error) {
-        console.log("CSRF verification error:",error);
+        console.log(error);
         return res.status(500).json({
-            message:"CSRF verification failed",
-            code:"CSRF_VERIFICATION_ERROR"
-        })
+            message: "CSRF verification failed"
+        });
     }
-}
+};
 
 export const revokeCSRFTOKEN = async(userId) =>{
     const csrfKey = `csrf:${userId}`
