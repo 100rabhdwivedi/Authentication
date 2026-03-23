@@ -215,13 +215,32 @@ export const verifyOtp = TryCatch(async(req,res)=>{
 
     res.status(200).json({
         message:`Welcome ${user.name}`,
-        user
+        user,
+        sessionInfo:{
+            sessionId:tokenData.sessionId,
+            loginTime: new Date().toISOString(),
+            csrfToken:tokenData.csrfToken
+        }
     })
 })
 
 export const myProfile = TryCatch(async(req,res)=>{
     const user = req.user 
-    res.status(200).json(user)
+    const sessionId = req.sessionId
+
+    const sessionData = await redisClient.get(`session:${sessionId}`)
+
+    let sessionInfo = null
+
+    if(sessionData){
+        const parsedSession = JSON.parse(sessionData)
+        sessionInfo = {
+            sessionId,
+            loginTime : parsedSession.createdAt,
+            lastActivity:parsedSession.lastActivity
+        }
+    }
+    res.status(200).json({user,sessionInfo})
 })
 
 export const refreshToken = TryCatch(async(req,res)=>{
@@ -237,13 +256,16 @@ export const refreshToken = TryCatch(async(req,res)=>{
     const decode = await verifyRefreshToken(refreshToken)
 
     if(!decode){
+        res.clearCookie('refreshToken')
+        res.clearCookie('accessToken')
+        res.clearCookie('csrfToken')
         return res.status(401).json({
-            message:"Invalid refresh token"
+            message:"Session Expired . Please login"
         })
     }
 
     // generate new access + refresh token
-    await generateToken(decode.id,res)
+    await generateToken(decode.id,decode.sessionId,res)
 
     res.status(200).json({
         message:"Session refreshed"
