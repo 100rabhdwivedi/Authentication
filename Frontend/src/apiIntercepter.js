@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const server = 'http://localhost:3000'
+const server = imoort.meta.env.VITE_BACKEND_URL
 
 const getCookie = (name) =>{
     const value = `; ${document.cookie}`;
